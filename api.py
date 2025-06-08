@@ -58,12 +58,11 @@ def extract_medications_allergies(text):
     return meds, allergies
 
 @app.route('/')
-def home():
+def dashboard():
     if session.get('patient_id'):
         wallet = get_wallet(session.get('patient_id'))
         return render_template('dashboard.html', chain=medichain.to_dict(), wallet=wallet)
     return render_template('index.html')
-
 
 @app.route('/wallet')
 @login_required
