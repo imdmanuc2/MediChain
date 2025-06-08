@@ -18,7 +18,7 @@
     {% if session.get('patient_id') %}
         <a href="{{ url_for('dashboard') }}">📋 Dashboard</a>
         <a href="{{ url_for('patient_history', patient_id=session.get('patient_id')) }}">🕘 History</a>
-        <a href="{{ url_for('wallet') }}">💰 Wallet</a>
+        <a href="{{ url_for('wallet_page') }}">💰 Wallet</a>
         <a href="{{ url_for('logout') }}">🚪 Logout</a>
     {% else %}
         <a href="{{ url_for('login') }}">🔐 Login</a>
