@@ -1,0 +1,27 @@
+<style>
+    .nav {
+        background-color: #1a1a1a;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .nav a {
+        color: #f9e70a;
+        text-decoration: none;
+        margin-right: 20px;
+        font-weight: bold;
+    }
+</style>
+
+<nav class="nav">
+    <a href="{{ url_for('public_index') }}">🏠 Home</a>
+    {% if session.get('patient_id') %}
+        <a href="{{ url_for('dashboard') }}">📋 Dashboard</a>
+        <a href="{{ url_for('patient_history', patient_id=session.get('patient_id')) }}">🕘 History</a>
+        <a href="{{ url_for('wallet') }}">💰 Wallet</a>
+        <a href="{{ url_for('logout') }}">🚪 Logout</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">🔐 Login</a>
+        <a href="{{ url_for('register') }}">📝 Register</a>
+    {% endif %}
+</nav>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient History - MediChain</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #fdfdfd;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 20px;
+        }
+        .logo {
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: #f9e70a;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .record {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.1);
+        }
+        .record h3 {
+            margin-top: 0;
+            color: #f9e70a;
+        }
+        .record pre {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .pagination {
+            margin-top: 30px;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 6px 12px;
+            background: #2a2a2a;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: #f9e70a;
+            font-weight: bold;
+        }
+        #filterForm {
+            margin: 20px 0;
+        }
+        #filterForm input[type="text"] {
+            width: 250px;
+            padding: 8px;
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+        }
+        #filterForm input[type="submit"] {
+            background-color: #f9e70a;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <h1>Patient History</h1>
+    <p>
+        <a href="/history/{{ patient_id }}/json" target="_blank">Download JSON</a> |
+        <a href="/history/{{ patient_id }}/csv" target="_blank">Download CSV</a>
+    </p>
+
+    <form id="filterForm" method="get">
+        <label for="type">Filter by Record Type:</label>
+        <input type="text" name="type" id="type" placeholder="e.g. Lab Report" value="{{ request.args.get('type', '') }}">
+        <input type="submit" value="Apply Filter">
+    </form>
+
+    {% if records %}
+        {% for record in records %}
+        <div class="record">
+            <h3>Block #{{ record.index }}</h3>
+            <p><strong>Date:</strong> {{ record.data.date }}</p>
+            <p><strong>Provider:</strong> {{ record.data.provider }}</p>
+            <p><strong>Doctor:</strong> {{ record.data.doctor }}</p>
+            <p><strong>Type:</strong> {{ record.data.type }}</p>
+            <p><strong>Notes:</strong> {{ record.data.notes }}</p>
+            <p><strong>Medications:</strong> {{ record.data.medications }}</p>
+            <p><strong>Allergies:</strong> {{ record.data.allergies }}</p>
+            {% if record.data.file_path %}
+                <p><strong>File:</strong> <a href="{{ record.data.file_path }}" target="_blank">View</a></p>
+            {% endif %}
+            <details>
+                <summary>🔍 Raw Data</summary>
+                <pre>{{ record | tojson(indent=2) }}</pre>
+            </details>
+        </div>
+        {% endfor %}
+
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="?page={{ page - 1 }}{% if request.args.get('type') %}&type={{ request.args.get('type') }}{% endif %}">« Prev</a>
+            {% endif %}
+            <span style="margin: 0 10px;">Page {{ page }}</span>
+            {% if has_next %}
+                <a href="?page={{ page + 1 }}{% if request.args.get('type') %}&type={{ request.args.get('type') }}{% endif %}">Next »</a>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <p>No records found for this patient ID.</p>
+    {% endif %}
+
+</body>
+</html>

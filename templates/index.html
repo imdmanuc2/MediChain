@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to MediChain</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #fdfdfd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        @keyframes pulseGlow {
+            0% {
+                filter: drop-shadow(0 0 5px #f9e70a);
+            }
+            50% {
+                filter: drop-shadow(0 0 20px #f9e70a);
+            }
+            100% {
+                filter: drop-shadow(0 0 5px #f9e70a);
+            }
+        }
+
+        .large-logo {
+            width: 400px;
+            animation: pulseGlow 2s infinite;
+        }
+
+        h1, h2 {
+            color: #f9e70a;
+        }
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        .section {
+            margin-top: 60px;
+        }
+        a.button {
+            display: inline-block;
+            margin-top: 30px;
+            background-color: #f9e70a;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            text-align: right;
+        }
+        nav a {
+            color: #f9e70a;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <img src="{{ url_for('static', filename='MediChain-logo.png') }}" alt="MediChain Logo" class="large-logo">
+        <h1>MediChain</h1>
+        <p>Your secure, blockchain-powered platform for storing medical and payment records.</p>
+
+        <div class="section">
+            <h2>What We Do</h2>
+            <p>MediChain empowers patients and providers by storing medical visit information, medications, allergies, and payment records securely on a blockchain. Your health data is private, tamper-proof, and always accessible.</p>
+        </div>
+
+        <div class="section">
+            <h2>Why It Matters</h2>
+            <p>We believe healthcare records should belong to you. MediChain ensures transparency, security, and ownership in managing your medical history.</p>
+        </div>
+
+        <div class="section">
+            <h2>Roadmap</h2>
+            <ul style="list-style-type:none; padding: 0;">
+                <li>✅ Launch MVP with visit records and payments</li>
+                <li>⏳ Add user-managed keys and encryption</li>
+                <li>⏳ Partner with healthcare providers</li>
+                <li>⏳ Add mobile and API support</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Tokenomics</h2>
+            <ul style="list-style-type: none; padding: 0;">
+                <li><strong>Total Supply:</strong> 21,000,000 MDC (fixed)</li>
+                <li><strong>Decimal Precision:</strong> 18 decimals</li>
+                <li><strong>Block Reward:</strong> Starts at 50 MDC/block, halves every 210,000 blocks</li>
+                <li><strong>Initial Distribution:</strong>
+                    <ul>
+                        <li>• 40% Mining Rewards</li>
+                        <li>• 20% Development Fund</li>
+                        <li>• 20% Partner Adoption Incentives</li>
+                        <li>• 10% Team & Advisors (vested)</li>
+                        <li>• 10% Community Airdrops</li>
+                    </ul>
+                </li>
+                <li><strong>Use Cases:</strong> Accessing encrypted records, provider rewards, staking for governance</li>
+                <li><strong>Circulation Forecast:</strong> Fully mined in ~20 years</li>
+            </ul>
+        </div>
+
+        <a href="/login" class="button">Get Started</a>
+    </div>
+</body>
+</html>

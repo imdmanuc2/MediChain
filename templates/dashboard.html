@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MediChain Dashboard</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #fdfdfd;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+        }
+        .nav {
+            background-color: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: #f9e70a;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+        .logo {
+            width: 250px;
+            margin-bottom: 10px;
+        }
+        .slogan {
+            font-size: 1.1em;
+            color: #f9e70a;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        input, textarea, select {
+            width: 300px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 8px;
+        }
+        label {
+            font-weight: bold;
+            color: #f9e70a;
+        }
+        hr {
+            margin: 30px 0;
+            border-color: #333;
+        }
+        .preview-box {
+            background: #1a1a1a;
+            padding: 10px;
+            border: 1px solid #555;
+            margin-top: 10px;
+        }
+        button, input[type="submit"] {
+            background-color: #f9e70a;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        a {
+            color: #f9e70a;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'navbar.html' %}
+
+<img src="{{ url_for('static', filename='MediChain-logo.png') }}" alt="MediChain Logo" class="logo">
+<div class="slogan">Your Health. Your Data. Your Power.</div>
+
+<h1>MediChain: Medical + Payment Blockchain</h1>
+
+<h2>Add New Visit Record</h2>
+<form method="POST" action="/upload" enctype="multipart/form-data" id="recordForm">
+    <input type="hidden" name="patient_id" value="{{ session.get('patient_id', '') }}">
+
+    <label>Provider:</label><br>
+    <input type="text" name="provider" placeholder="Enter provider"><br><br>
+
+    <label>Doctor:</label><br>
+    <input type="text" name="doctor" placeholder="Enter doctor's name"><br><br>
+
+    <label>Location:</label><br>
+    <input type="text" name="location" placeholder="Enter location"><br><br>
+
+    <label>Date of Visit:</label><br>
+    <input type="date" name="date"><br><br>
+
+    <label>Record Type:</label><br>
+    <input type="text" name="type" placeholder="e.g., General, Payment"><br><br>
+
+    <label>Notes:</label><br>
+    <textarea name="notes" placeholder="Enter notes..."></textarea><br><br>
+
+    <label>Medications:</label><br>
+    <textarea name="medications" id="medications"></textarea><br><br>
+
+    <label>Allergies:</label><br>
+    <textarea name="allergies" id="allergies"></textarea><br><br>
+
+    <label>Select Files (images, pdfs, txt):</label><br>
+    <input type="file" name="file" id="fileInput" multiple><br><br>
+
+    <button type="button" onclick="previewOCR()">🧠 OCR Preview</button><br><br>
+
+    <div id="ocrPreview" class="preview-box" style="display:none">
+        <strong>OCR Suggestions:</strong><br>
+        <div id="ocrMedications"></div>
+        <div id="ocrAllergies"></div>
+        <div><pre id="ocrRawText"></pre></div>
+    </div><br>
+
+    <label><input type="checkbox" id="is_payment" name="is_payment"> This is a payment record</label><br><br>
+
+    <div id="payment_fields" style="display: none;">
+        <label>Total Billed ($):</label><br>
+        <input type="number" name="billed_amount" step="0.01"><br><br>
+
+        <label>Amount Paid ($):</label><br>
+        <input type="number" name="amount_paid" step="0.01"><br><br>
+
+        <label>Payment Date:</label><br>
+        <input type="date" name="payment_date"><br><br>
+
+        <label>Payment Notes:</label><br>
+        <textarea name="payment_notes"></textarea><br><br>
+    </div>
+
+    <input type="submit" value="Add Visit Record">
+</form>
+
+<hr>
+
+<h2>💰 Wallet Summary</h2>
+{% if wallet %}
+    <p><strong>Patient ID:</strong> {{ wallet.patient_id }}</p>
+    <p><strong>Balance:</strong> {{ wallet.balance }} MDC</p>
+    <p><strong>Records Uploaded:</strong> {{ wallet.uploads }}</p>
+    <p><strong>Total Earned:</strong> {{ wallet.earned }} MDC</p>
+{% else %}
+    <p>No wallet data found.</p>
+{% endif %}
+
+<hr>
+
+<h2>Blockchain Records</h2>
+{% if session.get('patient_id') %}
+    <p><a href="{{ url_for('patient_history', patient_id=session.get('patient_id')) }}">🕘 View My History</a></p>
+{% else %}
+    <p><em>No patient ID associated with your session.</em></p>
+{% endif %}
+
+<ul>
+    {% for block in chain %}
+    <li>
+        <strong>Index {{ block.index }}</strong><br>
+        <strong>Timestamp:</strong> {{ block.timestamp }}<br>
+        <strong>Hash:</strong> {{ block.hash }}<br>
+        <strong>Previous Hash:</strong> {{ block.previous_hash }}<br>
+        <strong>Data:</strong>
+        <ul>
+            {% for k, v in block.data.items() %}
+                <li><strong>{{ k }}:</strong>
+                    {% if k == 'file_paths' and v %}
+                        {% for f in v %}
+                            <div><a href="{{ f }}" target="_blank">View File</a></div>
+                        {% endfor %}
+                    {% elif k == 'file_paths' %}
+                        No files uploaded
+                    {% else %}
+                        {{ v }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+    document.getElementById('is_payment').addEventListener('change', function () {
+        document.getElementById('payment_fields').style.display = this.checked ? 'block' : 'none';
+    });
+
+    function previewOCR() {
+        const fileInput = document.getElementById('fileInput');
+        const files = fileInput.files;
+        if (!files.length) return alert("Please select at least one file.");
+
+        const formData = new FormData();
+        for (let f of files) {
+            formData.append("files", f);
+        }
+
+        fetch('/ocr-preview', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) return alert(data.error);
+
+                document.getElementById('ocrMedications').innerText = "Medications: " + data.medications.join("; ");
+                document.getElementById('ocrAllergies').innerText = "Allergies: " + data.allergies.join("; ");
+                document.getElementById('ocrRawText').innerText = data.raw_text;
+                document.getElementById('ocrPreview').style.display = 'block';
+
+                document.getElementById('medications').value = data.medications.join("; ");
+                document.getElementById('allergies').value = data.allergies.join("; ");
+            })
+            .catch(err => alert("OCR error: " + err));
+    }
+</script>
+
+</body>
+</html>
