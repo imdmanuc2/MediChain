@@ -1,81 +1,59 @@
-<!-- wallet.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Your MediChain Wallet</title>
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #fdfdfd;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-        }
-        .nav {
-            background-color: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .nav a {
-            color: #f9e70a;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        h1, h2 {
-            color: #f9e70a;
-        }
-        .wallet-box {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 600px;
-            margin: auto;
-        }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #555;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #2a2a2a;
-        }
-        tr:nth-child(even) {
-            background-color: #222;
-        }
-    </style>
-</head>
-<body>
-    {% include 'navbar.html' %}
+{% extends "layout.html" %}
 
-    <div class="wallet-box">
-        <h1>My Wallet</h1>
-        <p><strong>Patient ID:</strong> {{ wallet.patient_id }}</p>
-        <p><strong>Balance:</strong> {{ "%.2f"|format(wallet.balance) }} MDC</p>
-        <p><strong>Total Earned:</strong> {{ "%.2f"|format(wallet.earned) }} MDC</p>
-        <p><strong>Uploads:</strong> {{ wallet.uploads }}</p>
+{% block title %}Your MediChain Wallet{% endblock %}
 
-        <h2>Transactions</h2>
-        {% if wallet.transactions %}
-        <table>
-            <tr><th>Timestamp</th><th>Type</th><th>Amount</th></tr>
-            {% for tx in wallet.transactions|reverse %}
-                <tr>
-                    <td>{{ tx.timestamp }}</td>
-                    <td>{{ tx.type }}</td>
-                    <td>{{ tx.amount }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <p>No transactions yet.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+{% block content %}
+<style>
+    h1, h2 {
+        color: #f9e70a;
+    }
+    .wallet-box {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: auto;
+    }
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #555;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #2a2a2a;
+    }
+    tr:nth-child(even) {
+        background-color: #222;
+    }
+</style>
+
+<div class="wallet-box">
+    <h1>My Wallet</h1>
+    <p><strong>Patient ID:</strong> {{ wallet.patient_id }}</p>
+    <p><strong>Balance:</strong> {{ "%.2f"|format(wallet.balance) }} MDC</p>
+    <p><strong>Total Earned:</strong> {{ "%.2f"|format(wallet.earned) }} MDC</p>
+    <p><strong>Uploads:</strong> {{ wallet.uploads }}</p>
+
+    <h2>Transactions</h2>
+    {% if wallet.transactions %}
+    <table>
+        <tr><th>Timestamp</th><th>Type</th><th>Amount</th></tr>
+        {% for tx in wallet.transactions|reverse %}
+            <tr>
+                <td>{{ tx.timestamp }}</td>
+                <td>{{ tx.type }}</td>
+                <td>{{ tx.amount }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No transactions yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,75 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MediChain Dashboard</title>
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #fdfdfd;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-        }
-        .nav {
-            background-color: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .nav a {
-            color: #f9e70a;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        .logo {
-            width: 250px;
-            margin-bottom: 10px;
-        }
-        .slogan {
-            font-size: 1.1em;
-            color: #f9e70a;
-            font-style: italic;
-            margin-bottom: 30px;
-        }
-        input, textarea, select {
-            width: 300px;
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 5px;
-            padding: 8px;
-        }
-        label {
-            font-weight: bold;
-            color: #f9e70a;
-        }
-        hr {
-            margin: 30px 0;
-            border-color: #333;
-        }
-        .preview-box {
-            background: #1a1a1a;
-            padding: 10px;
-            border: 1px solid #555;
-            margin-top: 10px;
-        }
-        button, input[type="submit"] {
-            background-color: #f9e70a;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        a {
-            color: #f9e70a;
-        }
-    </style>
-</head>
-<body>
+{% extends "layout.html" %}
 
-{% include 'navbar.html' %}
+{% block title %}MediChain Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .logo {
+        width: 250px;
+        margin-bottom: 10px;
+    }
+    .slogan {
+        font-size: 1.1em;
+        color: #f9e70a;
+        font-style: italic;
+        margin-bottom: 30px;
+    }
+    input, textarea, select {
+        width: 300px;
+        background-color: #2a2a2a;
+        color: #fff;
+        border: 1px solid #555;
+        border-radius: 5px;
+        padding: 8px;
+    }
+    label {
+        font-weight: bold;
+        color: #f9e70a;
+    }
+    hr {
+        margin: 30px 0;
+        border-color: #333;
+    }
+    .preview-box {
+        background: #1a1a1a;
+        padding: 10px;
+        border: 1px solid #555;
+        margin-top: 10px;
+    }
+    button, input[type="submit"] {
+        background-color: #f9e70a;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+</style>
 
 <img src="{{ url_for('static', filename='MediChain-logo.png') }}" alt="MediChain Logo" class="logo">
 <div class="slogan">Your Health. Your Data. Your Power.</div>
@@ -81,22 +57,22 @@
     <input type="hidden" name="patient_id" value="{{ session.get('patient_id', '') }}">
 
     <label>Provider:</label><br>
-    <input type="text" name="provider" placeholder="Enter provider"><br><br>
+    <input type="text" name="provider"><br><br>
 
     <label>Doctor:</label><br>
-    <input type="text" name="doctor" placeholder="Enter doctor's name"><br><br>
+    <input type="text" name="doctor"><br><br>
 
     <label>Location:</label><br>
-    <input type="text" name="location" placeholder="Enter location"><br><br>
+    <input type="text" name="location"><br><br>
 
     <label>Date of Visit:</label><br>
     <input type="date" name="date"><br><br>
 
     <label>Record Type:</label><br>
-    <input type="text" name="type" placeholder="e.g., General, Payment"><br><br>
+    <input type="text" name="type"><br><br>
 
     <label>Notes:</label><br>
-    <textarea name="notes" placeholder="Enter notes..."></textarea><br><br>
+    <textarea name="notes"></textarea><br><br>
 
     <label>Medications:</label><br>
     <textarea name="medications" id="medications"></textarea><br><br>
@@ -215,6 +191,4 @@
             .catch(err => alert("OCR error: " + err));
     }
 </script>
-
-</body>
-</html>
+{% endblock %}

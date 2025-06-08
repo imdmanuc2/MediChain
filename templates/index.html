@@ -1,67 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Welcome to MediChain</title>
-    <style>
-        body {
-            background-color: #0a0a0a;
-            color: #fdfdfd;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        @keyframes pulseGlow {
-            0% { filter: drop-shadow(0 0 5px #f9e70a); }
-            50% { filter: drop-shadow(0 0 20px #f9e70a); }
-            100% { filter: drop-shadow(0 0 5px #f9e70a); }
-        }
-        .large-logo {
-            width: 400px;
-            animation: pulseGlow 2s infinite;
-        }
-        h1, h2 {
-            color: #f9e70a;
-        }
-        p, li {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-        .section {
-            margin-top: 60px;
-        }
-        a.button {
-            display: inline-block;
-            margin-top: 30px;
-            background-color: #f9e70a;
-            color: #000;
-            padding: 12px 24px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        nav {
-            background: #1a1a1a;
-            padding: 10px 20px;
-            text-align: right;
-        }
-        nav a {
-            color: #f9e70a;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    {% include 'navbar.html' %}
+{% extends "layout.html" %}
 
-    <div class="container">
+{% block title %}Welcome to MediChain{% endblock %}
+
+{% block content %}
+    <div class="container" style="text-align: center;">
+        <style>
+            @keyframes pulseGlow {
+                0% { filter: drop-shadow(0 0 5px #f9e70a); }
+                50% { filter: drop-shadow(0 0 20px #f9e70a); }
+                100% { filter: drop-shadow(0 0 5px #f9e70a); }
+            }
+            .large-logo {
+                width: 400px;
+                animation: pulseGlow 2s infinite;
+            }
+            h1, h2 {
+                color: #f9e70a;
+            }
+            p, li {
+                font-size: 1.2em;
+                line-height: 1.6;
+            }
+            .section {
+                margin-top: 60px;
+            }
+            a.button {
+                display: inline-block;
+                margin-top: 30px;
+                background-color: #f9e70a;
+                color: #000;
+                padding: 12px 24px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: bold;
+            }
+        </style>
+
         <img src="{{ url_for('static', filename='MediChain-logo.png') }}" alt="MediChain Logo" class="large-logo">
         <h1>MediChain</h1>
         <p>Your secure, blockchain-powered platform for storing medical and payment records.</p>
@@ -119,7 +93,6 @@
             </ol>
         </div>
 
-        <a href="/login" class="button">Get Started</a>
+        <a href="{{ url_for('login') }}" class="button">Get Started</a>
     </div>
-</body>
-</html>
+{% endblock %}
