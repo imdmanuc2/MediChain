@@ -1,0 +1,31 @@
+MediChain/
+├── api.py                 # Flask REST API server
+├── medichain.py           # Core blockchain logic
+├── requirements.txt       # Python dependencies
+├── README.md              # (Optional) Project info
+├── data/                  # Store future file hashes or logs
+│   └── (optional files)
+├── static/                # (Optional) HTML/CSS if you add a frontend
+├── templates/             # (Optional) Flask HTML templates
+└── test/                  # (Optional) Unit test scripts
+###############################################
+source venv/bin/activate - 
+############################
+http://127.0.0.1:5000
+#################################
+Run in terminal
+curl -X POST http://127.0.0.1:5000/add_record \
+  -H "Content-Type: application/json" \
+  -d '{"patient_id": "A12345", "file_hash": "abc123...", "type": "Lab Report", "provider": "Mayo Clinic"}'
+
+curl http://127.0.0.1:5000/chain
+curl http://127.0.0.1:5000/validate
+############################################
+python3 api.py - Test Chain
+############################
+prod chain -
+export MEDICHAIN_MODE=prod
+python3 api.py
+###################
+
+

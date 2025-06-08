@@ -1,0 +1,45 @@
+🏥 provider
+| Example Values     | Notes                             |
+| ------------------ | --------------------------------- |
+| `Mayo Clinic`      | Hospital name                     |
+| `CVS Pharmacy`     | Pharmacy that issued prescription |
+| `UnitedHealthcare` | Insurance provider                |
+| `Allina Health`    | General health system             |
+
+📍 location
+| Example Values                      | Notes                            |
+| ----------------------------------- | -------------------------------- |
+| `Rochester, MN`                     | General city of service          |
+| `Mayo Clinic - St. Mary's Hospital` | Specific facility                |
+| `Telehealth`                        | For online appointments or calls |
+
+🗂️ type (aka Record Type)
+| Example Values | Notes                                      |
+| -------------- | ------------------------------------------ |
+| `Lab Report`   | Bloodwork, COVID test, etc.                |
+| `Prescription` | File from pharmacy                         |
+| `Surgery Bill` | Payment for procedure                      |
+| `Imaging`      | MRI, CT scan, X-ray results                |
+| `Payment`      | If it's a bill payment (you mark this too) |
+| `Doctor Visit` | General clinic note or visit summary       |
+
+✅ Example Record (Non-Payment)
+Provider: Mayo Clinic
+Location: Rochester, MN
+Record Type: Lab Report
+Notes: "Annual physical — bloodwork normal"
+
+✅ Example Record (Payment)
+Provider: UnitedHealthcare
+Location: Online portal
+Record Type: Payment
+Billed Amount: $800
+Amount Paid: $150
+Notes: "Paid deductible portion for ER visit"
+##############################
+Upload file process
+Upload → OCR Runs → Form is pre-filled → User reviews/edit → Save Block
+##############################################
+Dynamic navbar showing “Dashboard” when logged in
+Real blockchain reward accumulation logic
+Tokenomics summary displayed in dashboard or index page

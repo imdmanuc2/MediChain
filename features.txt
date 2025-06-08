@@ -1,0 +1,46 @@
+You can now extend MediChain with:
+
+🔐 File Upload + SHA-256 Hashing
+Upload PDFs, hash them, and store only the fingerprint in a block
+
+🌐 Web Dashboard UI
+Simple frontend to view blocks and submit records
+
+⛏️ Mining Dashboard / Reward Simulator
+Show block reward balances for patient or miner IDs
+
+💾 Persistent Storage
+Save chain to disk (JSON file or SQLite DB)
+
+🔄 Chain Sync / Peer Sharing (Phase 2)
+Simulate a peer-to-peer chain between VMs
+
+🔐 Encrypt the uploaded files or store them off-chain?
+
+💾 Persist the blockchain to disk (e.g. JSON or SQLite)?
+
+📊 Add miner stats like hash count or difficulty settings?
+
+🌍 Host it for secure family/friends access via HTTPS?
+
+✅ Add patient search
+
+✅ Add pagination or download history
+
+✅ Deploy to local network
+
+✅ Lock down with basic auth or login
+
+Display a chart of rewards over time using Chart.js or similar
+#############################################################
+Send rewards to exchange – This requires:
+	A UI form for entering destination address and amount.
+	Backend logic to validate and simulate/send the transaction.
+
+	If interoperating with real exchanges, you’d integrate 		blockchain logic or APIs (like BCH, ERC-20, etc.).
+#################################################################
+Let me know when you're ready to:
+	Add wallet address generation
+	Sign/send transactions
+	Integrate with a real blockchain or exchange
+#########################################################
