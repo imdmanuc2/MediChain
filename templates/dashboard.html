@@ -80,8 +80,17 @@
     <label>Allergies:</label><br>
     <textarea name="allergies" id="allergies"></textarea><br><br>
 
-    <label>Select Files (images, pdfs, txt):</label><br>
-    <input type="file" name="file" id="fileInput" multiple><br><br>
+    <div>
+        <label for="fileInput" id="fileLabel">Select Files (images, pdfs, txt):</label><br>
+        <input type="file" name="file" id="fileInput" multiple><br><br>
+    </div>
+
+    <div>
+        <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="is_payment" name="is_payment">
+            This is a payment record
+        </label>
+    </div><br>
 
     <button type="button" onclick="previewOCR()">🧠 OCR Preview</button><br><br>
 
@@ -91,8 +100,6 @@
         <div id="ocrAllergies"></div>
         <div><pre id="ocrRawText"></pre></div>
     </div><br>
-
-    <label><input type="checkbox" id="is_payment" name="is_payment"> This is a payment record</label><br><br>
 
     <div id="payment_fields" style="display: none;">
         <label>Total Billed ($):</label><br>
@@ -162,6 +169,13 @@
 
 <script>
     document.getElementById('is_payment').addEventListener('change', function () {
+        const fileLabel = document.getElementById('fileLabel');
+        if (this.checked) {
+            fileLabel.innerText = "Attach receipt image (optional):";
+        } else {
+            fileLabel.innerText = "Select Files (images, pdfs, txt):";
+        }
+
         document.getElementById('payment_fields').style.display = this.checked ? 'block' : 'none';
     });
 
@@ -191,4 +205,5 @@
             .catch(err => alert("OCR error: " + err));
     }
 </script>
+
 {% endblock %}

@@ -52,3 +52,16 @@ class Blockchain:
 
     def to_dict(self):
         return [vars(block) for block in self.chain]
+
+    def load_from_dict(self, chain_data):
+        self.chain = []
+        for block_data in chain_data:
+            block = Block(
+                block_data['index'],
+                block_data['timestamp'],
+                block_data['data'],
+                block_data['previous_hash'],
+                block_data['nonce']
+            )
+            block.hash = block_data['hash']
+            self.chain.append(block)

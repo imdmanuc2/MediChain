@@ -3,14 +3,18 @@ import hashlib
 import json
 import csv
 import uuid
-from flask import Flask, request, jsonify, render_template, redirect, url_for, send_from_directory, flash, session
+from flask import Flask, request, jsonify, render_template, redirect, url_for, send_from_directory, flash, session, abort
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from auth import User, verify_user, register_user
+from auth import User, verify_user, register_user, load_users, is_admin_user
 from medichain import Blockchain
 from wallet import get_wallet, update_wallet
 from PIL import Image
 import pytesseract
+import config
+from functools import wraps
+
+active_network = config.ACTIVE_NETWORK  # 'testnet' or 'mainnet'
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'txt'}
@@ -27,6 +31,23 @@ login_manager.init_app(app)
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+app.jinja_env.globals.update(
+    config=config,
+    current_user=current_user,
+    is_admin_user=is_admin_user
+)
+
+def is_admin():
+    return is_admin_user(session.get('patient_id'))
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_admin():
+            abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
 @login_manager.user_loader
 def load_user(username):
     return User(username)
@@ -41,7 +62,9 @@ def sha256_file(filepath):
             h.update(chunk)
     return h.hexdigest()
 
-def save_chain_to_json(filename='blockchain.json'):
+def save_chain_to_json(filename=None):
+    if not filename:
+        filename = config.CHAIN_FILE
     with open(filename, 'w') as f:
         json.dump(medichain.to_dict(), f, indent=4)
 
@@ -149,7 +172,7 @@ def upload_file():
 
     medichain.add_block(visit_record)
 
-    reward_amount = 1.0
+    reward_amount = config.REWARD_AMOUNT
     reward_tx = {
         'type': 'Reward',
         'patient_id': patient_id,
@@ -227,6 +250,106 @@ def validate():
 @login_required
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/switch-network/<network>')
+@admin_required
+def switch_network(network):
+    global active_network, medichain
+    if network not in config.NETWORKS:
+        flash(f"Unknown network: {network}")
+        return redirect(url_for('dashboard'))
+
+    active_network = network
+    chain_file = config.NETWORKS[active_network]['CHAIN_FILE']
+
+    if os.path.exists(chain_file):
+        with open(chain_file, 'r') as f:
+            medichain.load_from_dict(json.load(f))
+    else:
+        medichain = Blockchain()
+        save_chain_to_json()
+
+    flash(f"Switched to {active_network} network.")
+    return redirect(url_for('dashboard'))
+
+@app.route('/admin')
+@login_required
+@admin_required
+def admin_panel():
+    users = load_users()
+    chain_summary = {
+        'length': len(medichain.chain),
+        'latest_hash': medichain.get_latest_block().hash,
+        'valid': medichain.is_chain_valid(),
+        'network': active_network
+    }
+    network_config = config.NETWORKS[active_network]
+    return render_template("admin/admin_panel.html", users=users, chain=chain_summary, network_config=network_config)
+
+@app.route('/admin/cli', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_cli():
+    output = ""
+    if request.method == 'POST':
+        cmd = request.form.get('command', '')
+        if cmd.startswith('view-wallet'):
+            try:
+                _, pid = cmd.split()
+                wallet = get_wallet(pid)
+                output = json.dumps(wallet, indent=2) if wallet else 'Wallet not found'
+            except Exception as e:
+                output = f"Error: {str(e)}"
+        elif cmd == 'flush-chain':
+            medichain.chain = [medichain.create_genesis_block()]
+            save_chain_to_json()
+            output = 'Chain reset to genesis block.'
+        elif cmd == 'validate':
+            output = f"Valid: {medichain.is_chain_valid()}"
+        else:
+            output = 'Unknown command'
+
+    return render_template("admin/admin_cli.html", output=output)
+
+@app.route('/admin/reset-wallet', methods=['POST'])
+@admin_required
+def admin_reset_wallet():
+    patient_id = request.form.get('patient_id')
+    if not patient_id:
+        flash("Missing patient ID.")
+        return redirect(url_for('admin_panel'))
+
+    update_wallet(patient_id, 0, reason='admin_reset')
+    flash(f"Wallet for {patient_id} has been reset.")
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/add-admin', methods=['POST'])
+@admin_required
+def admin_add_admin():
+    new_admin = request.form.get('new_admin')
+    users = load_users()
+    if new_admin in users:
+        users[new_admin]['admin'] = True
+        with open(config.USER_DB, 'w') as f:
+            json.dump(users, f, indent=4)
+        flash(f"{new_admin} is now an admin.")
+    else:
+        flash("User not found.")
+    return redirect(url_for('admin_panel'))
+
+@app.route('/admin/remove-admin', methods=['POST'])
+@admin_required
+def admin_remove_admin():
+    remove_admin = request.form.get('remove_admin')
+    users = load_users()
+    if remove_admin in users and users[remove_admin].get('admin'):
+        users[remove_admin]['admin'] = False
+        with open(config.USER_DB, 'w') as f:
+            json.dump(users, f, indent=4)
+        flash(f"{remove_admin} is no longer an admin.")
+    else:
+        flash("User not found or not an admin.")
+    return redirect(url_for('admin_panel'))
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)

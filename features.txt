@@ -44,3 +44,8 @@ Let me know when you're ready to:
 	Sign/send transactions
 	Integrate with a real blockchain or exchange
 #########################################################
+Add a network badge to the dashboard?
+
+Help create a hidden admin switch panel?
+
+Or continue on another feature like mining, blockchain validation, or REST API integration?

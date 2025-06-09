@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h1>🔐 Admin Dashboard</h1>
+
+<h2>Chain Summary</h2>
+<ul>
+    <li><strong>Network:</strong> {{ chain.network }}</li>
+    <li><strong>Chain Length:</strong> {{ chain.length }}</li>
+    <li><strong>Latest Block Hash:</strong> {{ chain.latest_hash }}</li>
+    <li><strong>Chain Valid:</strong> {{ chain.valid }}</li>
+</ul>
+
+<h3>Network Config</h3>
+<ul>
+    <li><strong>Reward Amount:</strong> {{ network_config.REWARD_AMOUNT }}</li>
+    <li><strong>Wallet File:</strong> {{ network_config.WALLET_FILE }}</li>
+    <li><strong>Chain File:</strong> {{ network_config.CHAIN_FILE }}</li>
+</ul>
+
+<h2>Admin Users</h2>
+<form method="post" action="{{ url_for('admin_add_admin') }}">
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user }}
+                {% if users[user].admin %}
+                    <form method="post" action="{{ url_for('admin_remove_admin') }}" style="display:inline;">
+                        <button type="submit" name="remove_admin" value="{{ user }}">❌ Remove</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <input type="text" name="new_admin" placeholder="New Admin Username">
+    <button type="submit">➕ Add Admin</button>
+</form>
+
+<h2>Reset Wallet</h2>
+<form method="post" action="{{ url_for('admin_reset_wallet') }}">
+    <input type="text" name="patient_id" placeholder="Patient ID or Username" required>
+    <button type="submit">🧸 Reset Wallet</button>
+</form>
+
+<p><a href="{{ url_for('admin_cli') }}">⚙️ Open Admin CLI</a></p>
+{% endblock %}

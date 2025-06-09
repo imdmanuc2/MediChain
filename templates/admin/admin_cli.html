@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Admin CLI{% endblock %}
+
+{% block content %}
+<h1>🧠 Admin CLI</h1>
+<form method="post">
+    <label for="command"><strong>Enter Command:</strong></label><br>
+    <input type="text" name="command" id="command" placeholder="e.g., view-wallet user123" style="width: 400px;" required>
+    <button type="submit">Run</button>
+</form>
+
+{% if output %}
+    <h3>Result</h3>
+    <pre>{{ output }}</pre>
+{% endif %}
+
+<p><a href="{{ url_for('admin_panel') }}">← Back to Admin Dashboard</a></p>
+{% endblock %}

@@ -39,12 +39,24 @@
             <a href="{{ url_for('dashboard') }}">📋 Dashboard</a>
             <a href="{{ url_for('patient_history', patient_id=session.get('patient_id')) }}">🕘 History</a>
             <a href="{{ url_for('wallet_page') }}">💰 Wallet</a>
+
+            {% if is_admin_user(session.get('patient_id')) %}
+                <a href="{{ url_for('admin_panel') }}">🛠️ Admin</a>
+            {% endif %}
+
             <a href="{{ url_for('logout') }}">🚪 Logout</a>
         {% else %}
             <a href="{{ url_for('login') }}">🔐 Login</a>
             <a href="{{ url_for('register') }}">📝 Register</a>
         {% endif %}
     </nav>
+
+    {% if session.get('patient_id') %}
+        <span style="margin-left: 20px;">⛓️ Network:
+            <a href="{{ url_for('switch_network', network='mainnet') }}">Main</a> |
+            <a href="{{ url_for('switch_network', network='testnet') }}">Test</a>
+        </span>
+    {% endif %}
 
     <div class="container">
         {% block content %}{% endblock %}

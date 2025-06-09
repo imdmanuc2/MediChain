@@ -27,5 +27,10 @@ prod chain -
 export MEDICHAIN_MODE=prod
 python3 api.py
 ###################
+Add users with optional --admin flag:
 
+python cli_tool.py add-user alice secret123 --admin
+List all users and their roles:
 
+python cli_tool.py list-users
+#########################################
